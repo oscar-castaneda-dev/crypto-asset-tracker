@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
 import { getTopCoins, getCoinDetail, getHistoricalData } from "./cryptoThunks";
 import type { Coin, CoinDetail } from "@/types/crypto";
 import type { CryptoState } from "@/types/crypto";
@@ -24,7 +23,23 @@ const initialState: CryptoState = {
 const cryptoSlice = createSlice({
   name: "crypto",
   initialState,
-  reducers: {},
+  reducers: {
+    // ✅ reducers para hidratar Redux manualmente
+    setTopCoins: (state, action: PayloadAction<Coin[]>) => {
+      state.topCoins.data = action.payload;
+      state.coins = action.payload;
+    },
+    setSelectedCoin: (state, action: PayloadAction<CoinDetail>) => {
+      state.selectedCoin = action.payload;
+    },
+    setHistoricalData: (
+      state,
+      action: PayloadAction<{ labels: string[]; prices: number[] }>
+    ) => {
+      state.chartData.labels = action.payload.labels;
+      state.chartData.prices = action.payload.prices;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Get Top Coins
@@ -96,5 +111,8 @@ const cryptoSlice = createSlice({
       });
   },
 });
+
+export const { setTopCoins, setSelectedCoin, setHistoricalData } =
+  cryptoSlice.actions;
 
 export default cryptoSlice.reducer;
