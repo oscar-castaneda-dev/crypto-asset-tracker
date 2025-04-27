@@ -1,31 +1,64 @@
 import { useEffect, useState } from "react";
 
-import { Coin } from "@/types/crypto";
-import { fetchTopCoins } from "@/services/coinService";
+import { cache } from "@/helpers/cache";
+import {
+  COIN_DETAIL,
+  HISTORICAL_DATA,
+  TOP_COINS_BY_MARKET_CAP,
+} from "@/constants/cacheKeys";
+import {
+  getCoinDetail,
+  getHistoricalData,
+  getTopCoins,
+} from "@/store/crypto/cryptoThunks";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
 
 export function Home() {
-  const [coins, setCoins] = useState<Coin[]>([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useAppDispatch();
+
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [mainCoinId, setMainCoinId] = useState<string>("bitcoin");
 
   useEffect(() => {
-    const loadTopCoins = async () => {
-      setLoading(true);
+    const fetchInitialCryptoData = async () => {
       try {
-        const topCoins = await fetchTopCoins(10);
-        setCoins(topCoins);
+        const cachedTopCoinsByMarketCap = cache.get<any[]>(
+          TOP_COINS_BY_MARKET_CAP
+        );
+        const cachedCoinDetail = cache.get<any>(COIN_DETAIL);
+        const cachedHistoricalData = cache.get<any>(HISTORICAL_DATA);
+
+        const hasStoredData =
+          cachedTopCoinsByMarketCap && cachedCoinDetail && cachedHistoricalData;
+
+        if (hasStoredData) {
+          if (process.env.NODE_ENV === "development") {
+            console.log("Found valid cache, skipping API fetch.");
+          }
+          setInitialLoading(false);
+          return;
+        }
+
+        if (process.env.NODE_ENV === "development") {
+          console.log("No valid cache, fetching from API...");
+        }
+
+        await Promise.all([
+          dispatch(getTopCoins(8)),
+          dispatch(getCoinDetail(mainCoinId)),
+          dispatch(getHistoricalData({ coinId: mainCoinId, range: "7d" })),
+        ]);
       } catch (error) {
-        console.error("Failed to load top coins:", error);
+        if (process.env.NODE_ENV === "development") {
+          console.error("Error fetching initial crypto data:", error);
+        }
       } finally {
-        setLoading(false);
+        setInitialLoading(false);
       }
     };
 
-    loadTopCoins();
+    fetchInitialCryptoData();
   }, []);
 
-  return (
-    <div>
-      <p>home page</p>
-    </div>
-  );
+  return <div>{initialLoading ? <p>loading</p> : <p>home page</p>}</div>;
 }
