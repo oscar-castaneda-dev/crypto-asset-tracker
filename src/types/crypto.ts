@@ -1,9 +1,14 @@
 export interface CryptoState {
   coins: Coin[];
   selectedCoin: CoinDetail | null;
-  chartData: ChartData | null;
+  chartData: ChartData;
   loading: boolean;
   error: string | null;
+  topCoins: {
+    data: Coin[];
+    loading: boolean;
+    error: string | null;
+  };
 }
 
 export interface Coin {

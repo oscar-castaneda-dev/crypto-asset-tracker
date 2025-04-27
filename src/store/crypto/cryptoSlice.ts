@@ -1,14 +1,24 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { getTopCoins, getCoinDetail, getHistoricalData } from "./cryptoThunks";
+import type { Coin, CoinDetail } from "@/types/crypto";
 import type { CryptoState } from "@/types/crypto";
 
-export const initialState: CryptoState = {
+const initialState: CryptoState = {
   coins: [],
   selectedCoin: null,
-  chartData: null,
+  chartData: {
+    labels: [],
+    prices: [],
+    compareData: [],
+  },
   loading: false,
   error: null,
+  topCoins: {
+    data: [],
+    loading: false,
+    error: null,
+  },
 };
 
 const cryptoSlice = createSlice({
@@ -17,110 +27,72 @@ const cryptoSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Top coins
+      // Get Top Coins
       .addCase(getTopCoins.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-        if (process.env.NODE_ENV === "development") {
-          console.log("Redux: Processing getTopCoins.pending");
-        }
+        state.topCoins.loading = true;
+        state.topCoins.error = null;
       })
-      .addCase(getTopCoins.fulfilled, (state, action) => {
-        state.loading = false;
-        state.coins = action.payload;
-        if (process.env.NODE_ENV === "development") {
-          console.log(
-            "Redux: Processing getTopCoins.fulfilled, coins:",
-            action.payload.length
-          );
+      .addCase(
+        getTopCoins.fulfilled,
+        (state, action: PayloadAction<Coin[]>) => {
+          state.topCoins.loading = false;
+          state.topCoins.data = action.payload;
+          state.coins = action.payload;
         }
-      })
+      )
       .addCase(getTopCoins.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || "Failed to fetch coins";
-        if (process.env.NODE_ENV === "development") {
-          console.log(
-            "Redux: Processing getTopCoins.rejected, error:",
-            state.error
-          );
-        }
+        state.topCoins.loading = false;
+        state.topCoins.error = action.payload || "Failed to fetch top coins";
       })
 
-      // Coin detail
+      // Get Coin Detail
       .addCase(getCoinDetail.pending, (state) => {
         state.loading = true;
         state.error = null;
-        if (process.env.NODE_ENV === "development") {
-          console.log("Redux: Processing getCoinDetail.pending");
-        }
       })
-      .addCase(getCoinDetail.fulfilled, (state, action) => {
-        state.loading = false;
-        state.selectedCoin = action.payload;
-        if (process.env.NODE_ENV === "development") {
-          console.log(
-            "Redux: Processing getCoinDetail.fulfilled, coin:",
-            action.payload?.id
-          );
+      .addCase(
+        getCoinDetail.fulfilled,
+        (state, action: PayloadAction<CoinDetail>) => {
+          state.loading = false;
+          state.selectedCoin = action.payload;
         }
-      })
+      )
       .addCase(getCoinDetail.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to fetch coin details";
-        if (process.env.NODE_ENV === "development") {
-          console.log(
-            "Redux: Processing getCoinDetail.rejected, error:",
-            state.error
-          );
-        }
+        state.error = action.payload || "Failed to fetch coin detail";
       })
 
-      // Historical data
+      // Get Historical Data
       .addCase(getHistoricalData.pending, (state) => {
         state.loading = true;
         state.error = null;
-        if (process.env.NODE_ENV === "development") {
-          console.log("Redux: Processing getHistoricalData.pending");
-        }
       })
       .addCase(
         getHistoricalData.fulfilled,
-        (state, action: PayloadAction<any & { coinId: string }>) => {
+        (
+          state,
+          action: PayloadAction<{
+            labels: string[];
+            prices: number[];
+            coinId: string;
+          }>
+        ) => {
           state.loading = false;
+          const { labels, prices, coinId } = action.payload;
 
-          if (!state.chartData) {
-            state.chartData = {
-              labels: action.payload.labels,
-              prices: action.payload.prices,
-              compareData: [],
-            };
-          } else if (action.payload.coinId === state.selectedCoin?.id) {
-            state.chartData.labels = action.payload.labels;
-            state.chartData.prices = action.payload.prices;
+          if (state.selectedCoin?.id === coinId) {
+            // Main coin data
+            state.chartData.labels = labels;
+            state.chartData.prices = prices;
           } else {
-            state.chartData.compareData = [
-              ...(state.chartData.compareData || []),
-              ...action.payload.prices,
-            ];
-          }
-
-          if (process.env.NODE_ENV === "development") {
-            console.log(
-              "Redux: Processing getHistoricalData.fulfilled, data points:",
-              action.payload.prices?.length
-            );
+            // Compare coin data
+            state.chartData.compareData = prices;
           }
         }
       )
       .addCase(getHistoricalData.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to fetch historical data";
-        if (process.env.NODE_ENV === "development") {
-          console.log(
-            "Redux: Processing getHistoricalData.rejected, error:",
-            state.error
-          );
-        }
+        state.error = action.payload || "Failed to fetch historical data";
       });
   },
 });
