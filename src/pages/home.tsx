@@ -104,9 +104,9 @@ export function Home() {
   };
 
   return (
-    <main className="container mx-auto py-10">
+    <main className="container mx-auto  p-10">
       <Header />
-      <div className="grid  grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-6 lg:gap-6">
         {/* left column */}
         <div className="md:col-span-2 space-y-6">
           <CryptoDashboard
@@ -117,9 +117,7 @@ export function Home() {
           />
         </div>
         {/* right column */}
-        <div>
-          <MarketSidebar />
-        </div>
+        <MarketSidebar />
       </div>
     </main>
   );
