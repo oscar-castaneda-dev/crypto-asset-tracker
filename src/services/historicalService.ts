@@ -18,14 +18,10 @@ export const fetchHistoricalData = async (
   const cachedData = cache.get<ChartData>(cacheKey);
 
   if (cachedData) {
-    console.log(`Using cached historical data for ${coinId} (${range})`);
     return cachedData;
   }
 
   try {
-    console.log(
-      `Fetching historical data for ${coinId} (${range}) from API...`
-    );
     const response = await fetch(
       `${API_URL}/coins/${coinId}/market_chart?vs_currency=usd&days=${days}&interval=daily&x_cg_demo_api_key=${COINGECKO_API_KEY}`
     );
@@ -51,9 +47,6 @@ export const fetchHistoricalData = async (
     };
 
     cache.set(cacheKey, chartData);
-    console.log(
-      `Successfully fetched historical data for ${coinId} (${range})`
-    );
 
     return chartData;
   } catch (error) {
@@ -66,10 +59,6 @@ export const fetchMultipleHistoricalData = async (
   coinIds: string[],
   range: TimeRange
 ): Promise<{ [id: string]: ChartData | null }> => {
-  console.log(
-    `Fetching multiple historical data for: ${coinIds.join(", ")} (${range})`
-  );
-
   const result: { [id: string]: ChartData | null } = {};
 
   for (const coinId of coinIds) {

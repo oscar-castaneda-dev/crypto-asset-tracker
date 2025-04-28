@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { CoinDetailsError } from "./coin-details-error";
 import { CoinDetailsSkeleton } from "./coin-details-skeleton";
-import { CoinPriceInfo } from "./coin-price-Info";
+import { CoinPriceInfo } from "./coin-price-info";
 import { useAppSelector } from "@/hooks/useAppSelector";
 
 export function CoinDetails() {
@@ -11,11 +11,11 @@ export function CoinDetails() {
     (state) => state.crypto
   );
 
-  if (loading) {
+  if (loading || !selectedCoin) {
     return <CoinDetailsSkeleton />;
   }
 
-  if (error || !selectedCoin) {
+  if (error) {
     toast.error("An error has occurred", {
       description: error ?? "Failed to load cryptocurrency details",
     });
