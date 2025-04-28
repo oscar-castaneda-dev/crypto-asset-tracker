@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Line,
   LineChart,
@@ -19,6 +19,11 @@ import { TimeRangeSelector } from "@/components/crypto/selectors/time-range-sele
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 
+interface FormattedChartData {
+  date: string;
+  [coinId: string]: string | number;
+}
+
 interface PriceChartProps {
   coinId: string;
   compareCoinId?: string;
@@ -26,20 +31,21 @@ interface PriceChartProps {
 
 export function PriceChart({ coinId, compareCoinId }: PriceChartProps) {
   const dispatch = useAppDispatch();
-  const { chartData } = useAppSelector((state) => state.crypto);
+  const { historicalData } = useAppSelector((state) => state.crypto);
 
   const [timeRange, setTimeRange] = useState<TimeRange>("7d");
-  const [localChartData, setLocalChartData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [localChartData, setLocalChartData] = useState<FormattedChartData[]>(
+    []
+  );
 
   useEffect(() => {
-    const loadChartData = async () => {
+    const loadData = async () => {
       if (!coinId) return;
 
       setLoading(true);
 
       try {
-        // Pedimos data
         await dispatch(getHistoricalData({ coinId, range: timeRange }));
         if (compareCoinId) {
           await dispatch(
@@ -47,31 +53,45 @@ export function PriceChart({ coinId, compareCoinId }: PriceChartProps) {
           );
         }
       } catch (error) {
-        console.error("Error fetching chart data:", error);
+        console.error("Error loading chart data:", error);
       } finally {
-        // Pequeño delay para transición suave
         setTimeout(() => {
           setLoading(false);
-        }, 50);
+        }, 100);
       }
     };
 
-    loadChartData();
+    loadData();
   }, [dispatch, coinId, compareCoinId, timeRange]);
 
   useEffect(() => {
-    if (!chartData?.labels || !chartData?.prices) return;
+    if (!historicalData[coinId]?.labels || !historicalData[coinId]?.prices)
+      return;
 
-    const formatted = chartData.labels.map((date, index) => ({
-      date,
-      [coinId]: chartData.prices[index] || 0,
-      ...(compareCoinId && chartData.compareData
-        ? { [compareCoinId]: chartData.compareData[index] || 0 }
-        : {}),
-    }));
+    const mainCoin = historicalData[coinId];
+    const compareCoin = compareCoinId ? historicalData[compareCoinId] : null;
 
-    setLocalChartData(formatted);
-  }, [chartData, coinId, compareCoinId]);
+    const formattedData: FormattedChartData[] = mainCoin.labels.map(
+      (date: string, index: number) => {
+        const entry: FormattedChartData = {
+          date,
+          [coinId]: mainCoin.prices[index],
+        };
+
+        if (
+          compareCoinId &&
+          compareCoin &&
+          compareCoin.prices[index] !== undefined
+        ) {
+          entry[compareCoinId] = compareCoin.prices[index];
+        }
+
+        return entry;
+      }
+    );
+
+    setLocalChartData(formattedData);
+  }, [historicalData, coinId, compareCoinId]);
 
   const handleTimeRangeChange = (range: TimeRange) => {
     setTimeRange(range);
@@ -86,6 +106,7 @@ export function PriceChart({ coinId, compareCoinId }: PriceChartProps) {
           onRangeChange={handleTimeRangeChange}
         />
       </CardHeader>
+
       <CardContent className="pt-6">
         {loading ? (
           <ChartSkeleton />
