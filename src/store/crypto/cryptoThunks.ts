@@ -4,7 +4,6 @@ import { fetchHistoricalData } from "@/services/historicalService";
 import { fetchTopCoins, fetchCoinDetail } from "@/services/coinService";
 import type { Coin, TimeRange } from "@/types/crypto";
 
-// Get Top Coins
 export const getTopCoins = createAsyncThunk<
   Coin[],
   number,
@@ -21,7 +20,6 @@ export const getTopCoins = createAsyncThunk<
   }
 });
 
-// Get Coin Detail
 export const getCoinDetail = createAsyncThunk<
   any,
   string,
