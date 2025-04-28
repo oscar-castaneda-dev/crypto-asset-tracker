@@ -345,7 +345,7 @@ export function WalletConnect() {
         ) : (
           <div className="p-8 border rounded-md bg-muted flex flex-col items-center justify-center text-center">
             <Wallet className="h-12 w-12 text-muted-foreground mb-3" />
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-black dark:text-white">
               Connect your MetaMask wallet to view your information
             </p>
           </div>
