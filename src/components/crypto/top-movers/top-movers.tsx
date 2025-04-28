@@ -19,7 +19,7 @@ export function TopMovers() {
     return <TopMoversError message={error} />;
   }
 
-  const topCoins = coins.slice(0, 7);
+  const topCoins = coins.slice(0, 5);
 
   return (
     <Card className="w-full">

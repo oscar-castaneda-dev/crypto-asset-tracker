@@ -98,7 +98,7 @@ export function PriceChart({ coinId, compareCoinId }: PriceChartProps) {
   };
 
   return (
-    <Card className="w-full">
+    <Card className="w-full h-[595px]">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-xl font-bold">Price History</CardTitle>
         <TimeRangeSelector
@@ -111,7 +111,7 @@ export function PriceChart({ coinId, compareCoinId }: PriceChartProps) {
         {loading ? (
           <ChartSkeleton />
         ) : (
-          <ResponsiveContainer width="100%" height={400}>
+          <ResponsiveContainer width="100%" height={450}>
             <LineChart
               data={localChartData}
               margin={{ top: 5, right: 20, left: 20, bottom: 5 }}

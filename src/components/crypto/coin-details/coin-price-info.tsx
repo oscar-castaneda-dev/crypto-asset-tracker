@@ -4,7 +4,7 @@ interface CoinPriceInfoProps {
 }
 
 export function CoinPriceInfo({ price, priceChange }: CoinPriceInfoProps) {
-  const priceChangeColor = priceChange >= 0 ? "text-green-500" : "text-red-500";
+  const priceChangeColor = priceChange >= 0 ? "text-green-700" : "text-red-700";
   const priceChangeSymbol = priceChange >= 0 ? "+" : "";
 
   return (
