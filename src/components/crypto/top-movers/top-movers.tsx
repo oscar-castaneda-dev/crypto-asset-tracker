@@ -11,7 +11,7 @@ export function TopMovers() {
     error,
   } = useAppSelector((state) => state.crypto.topCoins);
 
-  if (!loading) {
+  if (loading) {
     return <TopMoversSkeleton />;
   }
 
@@ -19,7 +19,7 @@ export function TopMovers() {
     return <TopMoversError message={error} />;
   }
 
-  const topCoins = coins.slice(0, 8);
+  const topCoins = coins.slice(0, 7);
 
   return (
     <Card className="w-full">
