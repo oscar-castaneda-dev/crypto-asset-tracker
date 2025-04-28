@@ -30,7 +30,7 @@ export function CryptoDashboard({
         />
       </div>
       <CoinDetails />
-      <PriceChart />
+      <PriceChart coinId={mainCoinId} compareCoinId={compareCoin} />
     </div>
   );
 }

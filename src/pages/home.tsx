@@ -58,7 +58,7 @@ export function Home() {
         }
 
         await Promise.all([
-          dispatch(getTopCoins(8)),
+          dispatch(getTopCoins(20)),
           dispatch(getCoinDetail(mainCoinId)),
           dispatch(getHistoricalData({ coinId: mainCoinId, range: "7d" })),
         ]);

@@ -11,9 +11,6 @@ export const getTopCoins = createAsyncThunk<
   { rejectValue: string }
 >("crypto/getTopCoins", async (limit = 10, { rejectWithValue }) => {
   try {
-    if (process.env.NODE_ENV === "development") {
-      console.log("Redux Thunk: Fetching top coins, limit:", limit);
-    }
     const response = await fetchTopCoins(limit);
     return response;
   } catch (error) {
@@ -31,9 +28,6 @@ export const getCoinDetail = createAsyncThunk<
   { rejectValue: string }
 >("crypto/getCoinDetail", async (coinId, { rejectWithValue }) => {
   try {
-    if (process.env.NODE_ENV === "development") {
-      console.log("Redux Thunk: Fetching coin detail for:", coinId);
-    }
     const response = await fetchCoinDetail(coinId);
     return response;
   } catch (error) {
@@ -52,14 +46,6 @@ export const getHistoricalData = createAsyncThunk<
   "crypto/getHistoricalData",
   async ({ coinId, range }, { rejectWithValue }) => {
     try {
-      if (process.env.NODE_ENV === "development") {
-        console.log(
-          "Redux Thunk: Fetching historical data for:",
-          coinId,
-          "range:",
-          range
-        );
-      }
       const response = await fetchHistoricalData(coinId, range);
       return { ...response, coinId };
     } catch (error) {

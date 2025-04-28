@@ -12,7 +12,6 @@ export const fetchTopCoins = async (limit: number = 10): Promise<Coin[]> => {
   }
 
   try {
-    console.log(`Fetching top ${limit} coins from API...`);
     const response = await fetch(
       `${API_URL}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${limit}&page=1&sparkline=false&x_cg_demo_api_key=${COINGECKO_API_KEY}`
     );
@@ -30,7 +29,6 @@ export const fetchTopCoins = async (limit: number = 10): Promise<Coin[]> => {
     }
 
     cache.set(cacheKey, data);
-    console.log(`Successfully fetched ${data.length} coins`);
 
     return data;
   } catch (error) {
@@ -55,7 +53,6 @@ export const fetchCoinDetail = async (
   }
 
   try {
-    console.log(`Fetching details for ${coinId} from API...`);
     const response = await fetch(
       `${API_URL}/coins/${coinId}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&x_cg_demo_api_key=${COINGECKO_API_KEY}`
     );
@@ -73,7 +70,6 @@ export const fetchCoinDetail = async (
     }
 
     cache.set(cacheKey, data);
-    console.log(`Successfully fetched details for ${coinId}`);
 
     return data;
   } catch (error) {
