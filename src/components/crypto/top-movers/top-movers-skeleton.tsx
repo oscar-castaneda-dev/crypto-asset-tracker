@@ -5,7 +5,7 @@ export function TopMoversSkeleton() {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="text-xl">
+        <CardTitle className="text-lg font-semibold mb-4">
           Top Cryptocurrencies by Market Cap
         </CardTitle>
       </CardHeader>

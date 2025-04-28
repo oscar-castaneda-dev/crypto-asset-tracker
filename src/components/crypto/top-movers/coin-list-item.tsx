@@ -26,7 +26,7 @@ export function CoinListItem({ coin }: CoinListItemProps) {
         </div>
         <div
           className={`flex items-center text-sm ${
-            isPositive ? "text-green-500" : "text-red-500"
+            isPositive ? "text-green-700" : "text-red-700"
           }`}
         >
           {isPositive ? (

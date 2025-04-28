@@ -8,7 +8,7 @@ import { MarketSidebar } from "@/components/crypto/layout/market-sidebar";
 import { CryptoDashboard } from "@/components/crypto/layout/crypto-dashboard";
 
 export function Home() {
-  const [mainCoinId, setMainCoinId] = useState<string>("bitcoin");
+  const [mainCoinId, setMainCoinId] = useState<string>("ethereum");
   const [compareCoin, setCompareCoin] = useState<string | undefined>(undefined);
 
   const { initialLoading } = useInitialCryptoData(mainCoinId);

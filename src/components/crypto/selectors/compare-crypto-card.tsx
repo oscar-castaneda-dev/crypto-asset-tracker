@@ -14,7 +14,7 @@ export function CompareCryptoCard({
 }: CompareCryptoCardProps) {
   return (
     <Card>
-      <CardContent className="p-4">
+      <CardContent className="px-4 py-0.5">
         <h2 className="text-lg font-semibold mb-4">
           Compare with another Cryptocurrency
         </h2>

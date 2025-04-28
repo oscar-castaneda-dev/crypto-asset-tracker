@@ -17,8 +17,8 @@ export function CryptoDashboard({
   handleCompareCoinSelect,
 }: CryptoContentProps) {
   return (
-    <div className="md:col-span-2 space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="md:col-span-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 lg:mb-[74px]">
         <SelectCryptoCard
           mainCoinId={mainCoinId}
           handleCoinSelect={handleCoinSelect}
